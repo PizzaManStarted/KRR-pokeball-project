@@ -1,3 +1,6 @@
+% Inputs:
+% sphere/3, sphere_len/1 (from sphere_gen.lp's output)
+
 % "Returned values":
 #show output_cuboid/4.
 
@@ -62,13 +65,15 @@ is_reachable(ID,X,Y,Z) :- root(ID,X,Y,Z).
 is_reachable(ID,X2,Y2,Z2) :- is_reachable(ID,X,Y,Z),
                              has_neighbor(ID,X,Y,Z,X2,Y2,Z2).
 
-% A part of a cuboid is not reachable if there exist no path to the root.
+% A part of a cuboid is not reachable if there exist no path to the root:
 :- cuboid(X,Y,Z,ID), not is_reachable(ID,X,Y,Z).
 
 
 
 % Select a random rotation for the cuboid between the 24 possibility (see rotation.lp file):
 { selected_rot(ID, ROT) : ROT=1..24 } = 1 :- cuboid_id(ID).
+
+% /!\ The cuboid gets rotated by rule of the file `rotation.lp` which gets us `rotated_cuboid/4` rules.
 
 % Normalize after applying rotation:
 rot_min_x(ID, MinX) :- MinX = #min { X : rotated_cuboid(ID,X,Y,Z) }, cuboid_id(ID), MinX != #sup.
@@ -102,14 +107,14 @@ output_cuboid(nb_pieces + P, 0, 0, 0) :- additional_piece > 0, P=1..additional_p
 % To do this, we can try to guess a topological ordering of the cuboids:
 { build_step(ID, T) : T = 0..nb_pieces } = 1 :- cuboid_id(ID), realistic = 1.
 
-% A cuboid ID1 is said to be on top of a cuboid ID2 if there exist a piece of ID1 that is on top of a piece of ID2.
+% A cuboid ID1 is said to be on top of a cuboid ID2 if there exist a piece of ID1 that is on top of a piece of ID2:
 on_top_of(ID, X,Y,Z, ID2) :-
     cuboid(X,Y,Z, ID),
     sphere(X,Y,Z-1),
     cuboid(X,Y,Z-1, ID2),
     ID != ID2, realistic = 1.
 
-%  This check that the topological sort if valid.
+%  This check that the topological ordering if valid.
 :- build_step(ID, T),
    on_top_of(ID, X,Y,Z, ID2),
    build_step(ID2, T2),
