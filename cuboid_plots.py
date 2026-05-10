@@ -54,7 +54,10 @@ def generated_cuboid_map_id(cuboid_file):
                     rule = rule.removeprefix("output_cuboid(").removesuffix(").").split(",")
                     id = rule[0]
                     if id not in cuboid_map:
-                        color_dict[id] = (random.random(), random.random(), random.random(), 0.5)
+                        if id == "black_ring":
+                            color_dict["black_ring"] = (0.1, 0.1, 0.1, 0.5)
+                        else:
+                            color_dict[id] = (random.random(), random.random(), random.random(), 0.5)
                         cuboid_map[id] = count
                         count += 1
     return (cuboid_map, color_dict)
