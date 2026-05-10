@@ -104,11 +104,11 @@ def get_sphere_data(json_sol_file, radius, cuboid_color_map):
 
 
 def get_cuboids_data(cuboids_file, generated_cuboid_map, cuboid_color_map, radius):
-    diameter = radius * 2
+    diameter = (radius * 2) + 1
     nb_cuboids = len(cuboid_color_map)
     
-    cuboid_data = np.zeros([nb_cuboids, diameter + 1, diameter + 1, diameter + 1], dtype=np.bool)
-    colors = np.zeros([nb_cuboids, diameter + 1, diameter + 1, diameter + 1, 1], dtype=tuple)
+    cuboid_data = np.zeros([nb_cuboids, diameter, diameter, diameter], dtype=np.bool)
+    colors = np.zeros([nb_cuboids, diameter, diameter, diameter, 1], dtype=tuple)
     
     with open(cuboids_file) as file:
         for line in file:
@@ -119,15 +119,15 @@ def get_cuboids_data(cuboids_file, generated_cuboid_map, cuboid_color_map, radiu
                     id = rule[0]
                     x,y,z = int(rule[1]), int(rule[2]), int(rule[3])
 
-                    cuboid_data[generated_cuboid_map[id], x, y, z] = True
-                    colors[generated_cuboid_map[id], x, y, z, 0] = cuboid_color_map[id]
+                    cuboid_data[generated_cuboid_map[id], z, y, x] = True
+                    colors[generated_cuboid_map[id], z, y, x, 0] = cuboid_color_map[id]
 
     return (cuboid_data, colors)
 
 
 
-def plot_sphere(fig, axe, data, color_data, radius):
-    diameter = radius * 2
+def plot_data(fig, axe, data, color_data, radius, start_at_zero=False):
+    diameter = (radius * 2) + 1
     fig.suptitle(f"Resulting sphere of radius {radius}.")
 
     labels = list(range(0, diameter))
@@ -138,7 +138,7 @@ def plot_sphere(fig, axe, data, color_data, radius):
     
     axe.xaxis.set_major_formatter(ticker.NullFormatter())
 
-    format_reversed = [str(i-radius) for i in labels] 
+    format_reversed = [str(i-radius) for i in labels] if not start_at_zero else [str(i) for i in labels]
     
     # break
     axe.xaxis.set_minor_locator(ticker.FixedLocator(np.array(labels) + 0.5))
