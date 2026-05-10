@@ -56,11 +56,6 @@ cuboid_id(black_ring) :- all_cuboid_id(black_ring).
 origin_sphere(black_ring, -R, -R, 0) :- cuboid_id(black_ring), radius(R).
 placed_on_grid(black_ring, X, Y, 0) :- cuboid_id(black_ring), sphere(X,Y,0).
 
-% ___________________________________ OPTIMISATION PROBLEM ___________________________________
-
-% Tries to minimize the cost of the solution:
-% #minimize { L : solution_cost(L) }.
-
 % ___________________________________ REALISTIC ___________________________________
 
 % With realistic: Forces the pieces to be placed from the bottom up.
