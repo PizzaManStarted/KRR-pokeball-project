@@ -41,7 +41,7 @@ placed_on_grid(ID, X + X_off, Y + Y_off, Z + Z_off) :-  origin_sphere(ID, X, Y, 
 % Two cuboids cannot occupy the same space:
 :- placed_on_grid(ID1, X, Y, Z), placed_on_grid(ID2, X, Y, Z),  ID1 != ID2.
 
-% Every space of the cuboid has to be occupied:
+% Every space of the sphere has to be occupied:
 occupied(X,Y,Z) :- placed_on_grid(ID, X,Y,Z).
 :- sphere(X,Y,Z), not occupied(X,Y,Z).
 
